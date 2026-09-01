@@ -6,11 +6,7 @@ BENCH_ELIGIBLE = {'QB', 'RB', 'WR', 'TE', 'K', 'DST'}
 
 
 def build_roster_slots(roster: RosterSettings):
-    """Build an ordered list of roster slots, each with the set of positions
-    that can fill it. Order matters: dedicated position slots come first, so
-    a player fills their 'natural' slot before we ever consider using them
-    to fill FLEX/SUPERFLEX/bench -- this is a simple greedy assignment.
-    """
+    
     slots = []
     for _ in range(roster.qb):
         slots.append({'label': 'QB', 'eligible': {'QB'}, 'filled_by': None})
@@ -34,7 +30,7 @@ def build_roster_slots(roster: RosterSettings):
 
 
 class TeamRoster:
-    """One team's roster slots. A league is just a list of these."""
+    
 
     def __init__(self, roster: RosterSettings, team_number, is_user=False):
         self.team_number = team_number
@@ -63,12 +59,7 @@ class TeamRoster:
 
 
 class LeagueDraftState:
-    """The live state of an entire draft: every team's roster, plus which
-    players have been taken league-wide. `my_pick` is the 1-indexed team
-    number the user is drafting as -- it can be changed at any time without
-    losing anything already drafted, since it only flags which existing
-    team is "yours."
-    """
+    
 
     def __init__(self, roster: RosterSettings, my_pick=1):
         self.roster = roster
@@ -93,11 +84,7 @@ class LeagueDraftState:
         return self.pick_index >= self.total_picks
 
     def team_on_the_clock(self):
-        """Standard snake order: round 1 goes 1->N, round 2 goes N->1, round
-        3 goes 1->N again, etc. This naturally gives the last team in a
-        round back-to-back picks at the turn, without needing to special-
-        case it -- the formula just falls out that way.
-        """
+        
         if self.is_draft_complete():
             return None
         n = self.roster.num_teams
@@ -109,10 +96,7 @@ class LeagueDraftState:
         return self.teams[team_number - 1]
 
     def draft_player(self, player_name, position, team_number=None):
-        """Assign a player to a specific team's roster and remove them from
-        the league-wide available pool. Defaults to whoever is on the clock;
-        every draft action advances the pick counter by one regardless of
-        which team it's assigned to, since one real pick just happened."""
+        
         if team_number is None:
             team_number = self.team_on_the_clock().team_number
         self.drafted.add(player_name)
