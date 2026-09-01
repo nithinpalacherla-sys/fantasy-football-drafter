@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+.DS_Store
+.claude/
+
+# Real data, downloaded fresh via fetch_data.py rather than committed
+*.csv
