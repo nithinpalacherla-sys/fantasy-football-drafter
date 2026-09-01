@@ -1,8 +1,8 @@
 # Manual overrides for real offseason context (depth-chart changes,
 # coaching changes, scheme shifts) that a purely historical-stats model
-# has no way to see -- it only knows what already happened on the field,
+# has no way to see. It only knows what already happened on the field,
 # not roster moves affecting the season ahead. Like suspensions.py, this
-# needs to be updated by hand as real news breaks; it is inherently a
+# needs to be updated by hand as real news breaks. This is inherently a
 # judgment call, not something derived from data.
 #
 # Each entry is a multiplier on projected_ppg: >1.0 = increased
