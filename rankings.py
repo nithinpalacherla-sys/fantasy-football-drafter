@@ -14,20 +14,7 @@ ROOKIE_DRAFT_YEAR = 2026
 
 
 def discount_lone_outliers(players, outlier_multiplier=2.0, discount_fraction=0.5):
-    """VORP against a single fixed replacement level can't tell the
-    difference between a real positional cliff (several players all far
-    ahead of replacement) and one isolated outlier sitting atop an
-    otherwise gently-sloped position (e.g. a TE having a historically
-    huge season while TE2-TE6 are all close together). Real draft-day
-    value is lower for the lone-outlier case, since passing on that
-    player still leaves you a comparably good alternative next round.
-
-    This flags a player as a "lone outlier" only when their gap to the
-    next-best player at the position is unusually large *relative to
-    that position's own typical gap* -- so it only fires for a real
-    isolated case, and leaves positions with consistently large gaps
-    (e.g. a deep, top-heavy RB class) untouched.
-    """
+   
     result_frames = []
     for position, pos_players in players.groupby('position'):
         pos_players = pos_players.sort_values('projected_points', ascending=False).reset_index(drop=True)
@@ -70,23 +57,7 @@ def compute_vorp(players, roster):
 
 
 def apply_positional_dampening(players, roster):
-    """Raw VORP treats a point of value the same no matter which position
-    it came from, but that's not quite right: RB/WR fill 2 dedicated
-    lineup slots each (plus most of FLEX), while QB/TE/K/DST typically
-    fill only 1. An elite QB or TE's edge over replacement can only ever
-    be used once in your lineup, while an elite RB/WR's edge effectively
-    gets "used" across multiple roster slots -- real draft-day value (and
-    real ADP) reflects this, even though a single fixed-cutoff VORP number
-    does not.
-
-    We derive each position's "effective slots per team" straight from the
-    same replacement-rank logic already used for VORP itself (dividing by
-    the number of teams), then scale every position's VORP relative to
-    whichever position has the most effective slots. This reuses the
-    existing roster-settings math rather than introducing new constants,
-    and it naturally adapts if you change the roster (e.g. superflex
-    boosts QB's effective slot count and its dampening eases accordingly).
-    """
+    
     replacement_ranks = compute_replacement_ranks(roster)
     effective_slots = {pos: rank / roster.num_teams for pos, rank in replacement_ranks.items()}
     max_slots = max(effective_slots.values())
