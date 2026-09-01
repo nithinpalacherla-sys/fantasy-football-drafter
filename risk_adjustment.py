@@ -2,13 +2,7 @@ import numpy as np
 import pandas as pd
 from projections import build_history, DEFAULT_YEARS
 
-# How much real market appears to discount value for a player's own
-# year-to-year inconsistency, by position. Calibrated to well-documented
-# real ADP behavior: RB carries the largest risk discount (committee
-# backfields, the highest injury rate of any position, and famously the
-# lowest year-to-year statistical correlation of any skill position). QB
-# carries the smallest (most stable, least likely to have touches
-# reallocated to a teammate mid-season).
+
 RISK_SENSITIVITY = {
     'QB': 0.05,
     'RB': 0.25,
@@ -19,13 +13,7 @@ MAX_DISCOUNT = 0.30
 
 
 def compute_volatility(scoring=None, years=DEFAULT_YEARS):
-    """Volatility = how much a player's ppg varies year to year, after
-    removing any smooth improving/declining trend. A player who's simply
-    gotten steadily better (or worse) every year isn't "inconsistent" in
-    the risk sense real ADP is pricing in -- raw variance would incorrectly
-    flag them. Removing the linear trend first isolates genuine up-and-down
-    unpredictability instead.
-    """
+  
     history = build_history(years, scoring)
 
     def player_cv(group):
