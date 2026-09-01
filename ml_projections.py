@@ -10,10 +10,7 @@ ALL_YEARS = list(range(2013, 2026))
 TEST_TARGET_YEAR = 2025          # the one year we hold out and never train on
 BASE_FEATURES = ['prev_ppg', 'prev_games', 'prev_usage']
 
-# how "usage" is measured differs by position -- these are the raw columns
-# (summed, then divided by games) that make up a per-game workload signal.
-# RB uses carries + targets (not just carries) since receiving work is a big
-# share of value for modern pass-catching backs like McCaffrey or Kamara.
+
 USAGE_COLUMNS = {
     'QB': ['attempts'],
     'RB': ['carries', 'targets'],
@@ -21,13 +18,6 @@ USAGE_COLUMNS = {
     'TE': ['targets'],
 }
 
-# Target share (% of the team's total targets) matters beyond raw target
-# count for pass-catchers: a player commanding a big share of a low-volume
-# offense (e.g. Tetairoa McMillan's 25% share on a run-heavy Panthers team)
-# is a much better bet than raw counting stats suggest, since it reflects
-# their role independent of their own team's overall pass volume. Not
-# meaningful for QB (who doesn't receive targets) or as useful for RB
-# (already captured via carries+targets usage), so this is WR/TE-only.
 EXTRA_FEATURES = {
     'WR': ['prev_target_share'],
     'TE': ['prev_target_share'],
@@ -49,10 +39,7 @@ def load_season(year, scoring):
 
 
 def build_pairs(position, scoring, years=ALL_YEARS):
-    """One row per player per consecutive year-pair: features from year N,
-    label = actual ppg in year N+1. This is the (input, correct-answer)
-    training data supervised learning needs.
-    """
+   
     usage_cols = USAGE_COLUMNS[position]
     features = features_for(position)
     rows = []
@@ -92,9 +79,7 @@ def train_and_evaluate(position, scoring=None):
     predictions = model.predict(test[features])
     ml_mae = mean_absolute_error(test['target_ppg'], predictions)
 
-    # Fair baseline comparison: what would our existing heuristic have said?
-    # It only ever looks at prev_ppg (no usage feature), so this isolates
-    # "does the extra signal + learned weights actually help."
+    
     baseline_mae = mean_absolute_error(test['target_ppg'], test['prev_ppg'])
 
     return {
@@ -110,9 +95,7 @@ def train_and_evaluate(position, scoring=None):
 
 
 def predict_current_players(position, model, scoring=None, current_year=2025):
-    """Use the trained model to predict next season's ppg for every player
-    who actually played in `current_year`, using that season as the single
-    most-recent lookback (this is what the model was trained to do)."""
+   
     scoring = scoring or ScoringSettings()
     usage_cols = USAGE_COLUMNS[position]
     features = features_for(position)
@@ -130,11 +113,7 @@ def predict_current_players(position, model, scoring=None, current_year=2025):
 
 
 def blended_projections(scoring=None):
-    """Combine the learned ML model with the existing heuristic model,
-    weighting each by the inverse of its own measured test-set error --
-    the model that was actually more accurate on held-out data gets more
-    say in the final number. This is a simple, explainable ensemble.
-    """
+    
     from projections import project_players  # local import avoids a circular import
 
     scoring = scoring or ScoringSettings()
@@ -152,8 +131,6 @@ def blended_projections(scoring=None):
             ml_preds[['player_id', 'ml_ppg']], on='player_id', how='left'
         )
 
-        # players missing an ML prediction (no 2025 data to predict from,
-        # e.g. injury/inactive) just fall back to the heuristic alone
         has_ml = position_players['ml_ppg'].notna()
         position_players['blended_ppg'] = position_players['projected_ppg']
         position_players.loc[has_ml, 'blended_ppg'] = (
