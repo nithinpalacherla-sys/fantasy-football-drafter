@@ -1,25 +1,13 @@
-"""Downloads every real dataset this project depends on, all from
-nflverse's public data releases (https://github.com/nflverse/nflverse-data).
-Run this once after cloning the repo, before running any other script here.
 
-Uses curl (via subprocess) rather than Python's urllib: some Python.org
-macOS installs ship without a usable default CA bundle, which makes
-urllib's HTTPS requests fail with a certificate verification error. curl
-uses the system's own certificate store and works reliably here.
-"""
 import subprocess
 
 NFLVERSE_BASE = "https://github.com/nflverse/nflverse-data/releases/download"
 
-# 2013-2024 use the older "player_stats" release; 2025+ uses the newer,
-# consolidated "stats_player" release (nflverse migrated schemas partway
-# through this project's data window -- see COLUMN_RENAMES in
-# projections.py for the column-name differences this caused).
+
 PLAYER_STATS_OLD_YEARS = range(2013, 2025)
 PLAYER_STATS_NEW_YEARS = [2025]
 
-# Kicker and defense stats were split into separate files under the old
-# schema; the new schema merges them into the main player-stats file.
+
 SPECIAL_TEAMS_YEARS = [2023, 2024]
 
 FILES = {}
