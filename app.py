@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 
 from league_settings import ScoringSettings, RosterSettings
@@ -5,6 +6,23 @@ from rankings import build_draft_board
 from draft_simulator import LeagueDraftState, recommend
 
 st.set_page_config(page_title="Fantasy Football Draft Assistant", layout="wide")
+
+
+@st.cache_resource(show_spinner="First-time setup: downloading real NFL data from nflverse...")
+def ensure_data():
+    """The real source data (~13MB) is deliberately not committed to the
+    repo -- it's fetched fresh here instead. This runs once per deployment
+    (cached across reruns/sessions via cache_resource), so a freshly
+    deployed app on Streamlit Community Cloud provisions itself on its
+    first request rather than needing a manual setup step.
+    """
+    if not os.path.exists('draft_picks.csv'):
+        import fetch_data
+        fetch_data.fetch_all()
+    return True
+
+
+ensure_data()
 
 
 def sidebar_settings():
