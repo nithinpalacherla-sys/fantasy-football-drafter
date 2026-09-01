@@ -2,10 +2,7 @@ from league_settings import ScoringSettings
 
 
 def compute_fantasy_points(df, scoring: ScoringSettings):
-    """Compute fantasy points per row directly from raw box-score stats,
-    so we support any custom scoring settings rather than being stuck with
-    whatever presets the raw data happens to include.
-    """
+    
     fumbles_lost = (
         df['sack_fumbles_lost']
         + df['rushing_fumbles_lost']
