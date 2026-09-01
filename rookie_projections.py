@@ -3,14 +3,10 @@ from league_settings import ScoringSettings
 from scoring import compute_fantasy_points
 from projections import COLUMN_RENAMES, SEASON_LENGTH
 
-# How many past draft classes to build the round/position cohort averages
-# from. More years = more samples per cell, but very old seasons reflect a
-# different era of NFL offense, so this is a judgment call, not a fixed law.
+
 COHORT_YEARS = range(2013, 2026)
 
-# "Prior strength" for shrinking a round's cohort average toward the overall
-# position average, in units of number of rookies. A round with fewer
-# historical draftees than this leans more on the position-wide average.
+
 SHRINKAGE_ROOKIES = 8
 
 SKILL_POSITIONS = ['QB', 'RB', 'WR', 'TE']
@@ -58,10 +54,7 @@ def build_cohort_table(scoring=None, cohort_years=COHORT_YEARS, shrinkage_rookie
 
 
 def project_incoming_rookies(draft_year, scoring=None, cohort=None):
-    """Project players from a draft class with zero prior NFL stats, using
-    their draft round + position's historical cohort average as a stand-in
-    for individual performance history.
-    """
+    
     scoring = scoring or ScoringSettings()
     cohort = cohort if cohort is not None else build_cohort_table(scoring=scoring)
 
