@@ -5,8 +5,6 @@ SEASON_LENGTH = 17
 DEFAULT_YEARS = [2023, 2024, 2025]
 DEFAULT_WEIGHTS = {2023: 0.2, 2024: 0.3, 2025: 0.5}
 
-# Standard fantasy points-allowed tiers (points allowed in a single game -> score).
-# Checked in order; the first threshold a value is <= to is the one that applies.
 POINTS_ALLOWED_TIERS = [
     (0, 10), (6, 7), (13, 4), (20, 1), (27, 0), (34, -1), (float('inf'), -4),
 ]
