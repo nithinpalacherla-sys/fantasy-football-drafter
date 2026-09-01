@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class ScoringSettings:
-    """Points awarded per statistical event. Defaults to standard PPR."""
+    
     pass_yard: float = 0.04       # 1 point per 25 passing yards
     pass_td: float = 4.0
     interception: float = -2.0
@@ -27,7 +27,7 @@ class ScoringSettings:
 
 @dataclass(frozen=True)
 class RosterSettings:
-    """League roster construction. Defaults to a standard 12-team league."""
+    
     num_teams: int = 12
     qb: int = 1
     rb: int = 2
@@ -44,16 +44,13 @@ class RosterSettings:
                 + self.superflex + self.k + self.dst + self.bench)
 
 
-# Rough real-world usage split of FLEX and SUPERFLEX spots across eligible
-# positions, based on typical fantasy roster construction. These let us
-# convert "1 FLEX spot" into "roughly this many extra startable players per
-# position league-wide" for the replacement-level calculation.
+
 FLEX_SHARE = {'RB': 0.55, 'WR': 0.40, 'TE': 0.05}
 SUPERFLEX_SHARE = {'QB': 0.70, 'RB': 0.10, 'WR': 0.15, 'TE': 0.05}
 
 
 def compute_replacement_ranks(roster: RosterSettings):
-    """How many players at each position are 'startable' league-wide."""
+    
     n = roster.num_teams
     ranks = {
         'QB': n * roster.qb,
