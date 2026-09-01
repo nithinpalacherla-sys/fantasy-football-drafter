@@ -10,12 +10,7 @@ st.set_page_config(page_title="Fantasy Football Draft Assistant", layout="wide")
 
 @st.cache_resource(show_spinner="First-time setup: downloading real NFL data from nflverse...")
 def ensure_data():
-    """The real source data (~13MB) is deliberately not committed to the
-    repo -- it's fetched fresh here instead. This runs once per deployment
-    (cached across reruns/sessions via cache_resource), so a freshly
-    deployed app on Streamlit Community Cloud provisions itself on its
-    first request rather than needing a manual setup step.
-    """
+    
     if not os.path.exists('draft_picks.csv'):
         import fetch_data
         fetch_data.fetch_all()
@@ -85,13 +80,7 @@ POSITIONS = ['QB', 'RB', 'WR', 'TE', 'K', 'DST']
 
 
 def sync_team_dropdowns_to_clock(state: LeagueDraftState):
-    """After any pick, every position tab's 'Drafted by' dropdown should
-    default to whoever is now on the clock. The dropdowns are keyed on
-    plain team *numbers* (not label text), so this just needs to push the
-    new on-the-clock team's number into each widget's session_state slot --
-    a number stays valid even when labels change (e.g. "(You)" moving to a
-    different team), unlike matching against label strings.
-    """
+   
     on_the_clock = state.team_on_the_clock()
     if on_the_clock is None:
         return
@@ -100,8 +89,7 @@ def sync_team_dropdowns_to_clock(state: LeagueDraftState):
 
 
 def render_available_list(board, state: LeagueDraftState, position, key_prefix):
-    """One position's available-player list, with a team-assignment control
-    so a drafted player moves onto whichever team actually took them."""
+    
     available = board[(board['position'] == position) & (~board['player_display_name'].isin(state.drafted))]
     available = available.sort_values('vorp', ascending=False)
 
@@ -157,13 +145,7 @@ def draft_simulator_page(board, roster, my_pick):
     state = st.session_state.draft_state
     state.set_my_pick(my_pick)  # cheap to update every rerun; doesn't touch existing picks
 
-    # Sync the "Drafted by" dropdowns to whoever is now on the clock, but
-    # only right after the pick index actually changes -- and only here,
-    # before any of the six position tabs' widgets are created this run.
-    # Streamlit forbids writing to a widget's session_state key after that
-    # widget has already been instantiated in the same script run, so this
-    # must happen before the st.tabs() loop below, not inside a button
-    # handler nested within it.
+  
     if st.session_state.get('_synced_pick_index') != state.pick_index:
         sync_team_dropdowns_to_clock(state)
         st.session_state['_synced_pick_index'] = state.pick_index
