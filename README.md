@@ -1,5 +1,7 @@
 # Fantasy Football Draft Assistant
 
+**[Live app →](https://fantasy-football-drafter-twt7rgzxqojuqbehazdswe.streamlit.app)**
+
 A fantasy football draft board and live draft simulator built on real NFL data,
 combining a statistical projection model, a trained machine learning model, and
 a set of researched real-world overrides (trades, injuries, suspensions, coaching
