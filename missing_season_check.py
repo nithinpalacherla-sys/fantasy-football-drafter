@@ -1,19 +1,11 @@
 import pandas as pd
 
-# Players with at least this many games in an earlier season are "real"
-# enough that their total disappearance from 2025 is worth investigating
-# individually -- rather not miss a Mixon-style case, so this stays low.
+
 MIN_GAMES_THRESHOLD = 8
 
 
 def find_vanished_players():
-    """Players who had meaningful playing time in 2023 or 2024 but have
-    zero rows at all in the 2025 season file. A missing season currently
-    just silently drops out of every model's data window -- this doesn't
-    fix that on its own, it surfaces candidates for the kind of individual
-    research we did for Joe Mixon (season-ending injury, release, retirement,
-    etc.), since each case needs its own real explanation, not a blanket rule.
-    """
+    
     earlier = pd.concat([
         pd.read_csv('player_stats_season_2023.csv'),
         pd.read_csv('player_stats_season_2024.csv'),
