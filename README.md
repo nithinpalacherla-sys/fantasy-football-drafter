@@ -5,20 +5,20 @@
 A fantasy football draft board and live draft simulator built on real NFL data,
 combining a statistical projection model, a trained machine learning model, and
 a set of researched real-world overrides (trades, injuries, suspensions, coaching
-changes) — validated against real 2026 ADP data pulled from actual mock drafts.
+changes), validated against real 2026 ADP data pulled from actual mock drafts.
 
 Built as a from-scratch project to learn Python, pandas, and applied statistics/ML
-through a domain I actually cared about, rather than a toy tutorial dataset.
+through a domain I am interested in
 
 ## What it does
 
 - **Draft board** — every QB/RB/WR/TE/K/DST ranked by projected value, using
   Value Over Replacement (VORP), with configurable league scoring (PPR/half-PPR/
   standard) and roster settings (team count, superflex, flex, bench size).
-- **Draft simulator** — a live, multi-team draft tracker with proper **snake
-  draft order** (team N naturally gets back-to-back picks at the turn), a "you're
+- **Draft simulator** — a live, multi-team draft tracker with proper snake
+  draft order (team N naturally gets back-to-back picks at the turn), a "you're
   on the clock" indicator, per-position available-player lists, and a roster view
-  for every team in the league, not just yours.
+  for every team in the league.
 - **Web app** (Streamlit) — both of the above, interactively, in the browser.
 
 ## The modeling pipeline
@@ -48,7 +48,7 @@ several signals on top of a real-data foundation:
 5. **Volatility and committee-risk discounts** (`risk_adjustment.py`,
    `backup_threat.py`) — RBs are priced with more downside risk than other
    positions in real fantasy markets (committee backfields, high injury rate,
-   low year-to-year statistical correlation); this estimates that risk from a
+   low year-to-year statistical correlation). This estimates that risk from a
    player's own detrended year-to-year variance and from how much their actual
    backup produced last season (using current 2026 rosters, not last year's team
    assignments, so a trade or release doesn't create a stale read).
@@ -62,7 +62,8 @@ several signals on top of a real-data foundation:
 
 Rankings were checked against real 2026 PPR ADP (FantasyPros' consensus and
 FantasyFootballCalculator's real mock-draft data) throughout development. Several
-real, sourced discrepancies were found and fixed this way — a couple of examples:
+real, sourced discrepancies were found and fixed this way.
+Here are a couple of examples:
 
 - A player who'd missed his entire prior season with an injury was still ranked
   top-15 purely off older stats, because a fully missing season just silently
@@ -77,7 +78,7 @@ real, sourced discrepancies were found and fixed this way — a couple of exampl
 
 ```bash
 pip install -r requirements.txt
-python3 fetch_data.py    # pulls real historical stats from nflverse (~13MB)
+python3 fetch_data.py    # pulls real historical stats from nflverse
 streamlit run app.py
 ```
 
@@ -85,7 +86,7 @@ streamlit run app.py
 
 ```
 league_settings.py       League config: scoring rules, roster construction
-scoring.py                Raw box-score stats -> fantasy points
+scoring.py                Raw box-score stats leads to fantasy points
 projections.py            Heuristic multi-year weighted projection model
 ml_projections.py         Linear regression model + blend with the heuristic
 rookie_projections.py     Draft-cohort model for players with no NFL history
@@ -105,8 +106,8 @@ fetch_data.py             Downloads all real source data from nflverse
 
 ## Known limitations
 
-- Season-long projections only — no in-season/weekly updates.
+- Season-long projections only, meaning no in-season/weekly updates.
 - Manual overrides (trades, injuries) require someone to notice and research
-  the news; they aren't pulled from a live feed.
+  the news. They aren't pulled from a live feed.
 - Kicker/DST scoring uses standard point-per-kick and points-allowed tiers,
   which some leagues customize further.
